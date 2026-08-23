@@ -57,3 +57,17 @@ TEST(Logger, WriteLogEscapesInjection) {
     EXPECT_NE(content.find("\\\"quote\\\""), std::string::npos);
     EXPECT_EQ(content.find("\"quote\""), std::string::npos);
 }
+
+TEST(Logger, CreateRunDir) {
+    const std::string base = ::testing::TempDir() + "cppjudge_logger_test";
+
+    const std::string run_dir = Logger::create_run_dir(base);
+
+    ASSERT_FALSE(run_dir.empty());
+
+    struct stat st {};
+    ASSERT_EQ(stat(run_dir.c_str(), &st), 0);
+    EXPECT_TRUE(S_ISDIR(st.st_mode));
+
+    EXPECT_NE(run_dir.find(base + "/runs/"), std::string::npos);
+}
